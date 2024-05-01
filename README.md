@@ -1,5 +1,5 @@
-- 👋 Hi, I’m @Lazyplayer00
-- 👀 I’m interested in VR, Video games, space and tech
+- 👋 Hi, I’m Deeptanshu
+- 👀 I’m interested in VR, Video games, space and Web Dev
 - 🌱 I’m currently studying B.tech Computer Engg
 - 💞️ I’m looking to collaborate on anything really 
 
