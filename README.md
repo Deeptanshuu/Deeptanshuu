@@ -1,9 +1,9 @@
 <h1 align="center">Hi 👋, I'm Deeptanshu Lal</h1>
 <h3 align="center">A passionate software developer from India</h3>
 
-- 🌱 I’m currently learning **Nextj and Go**
+- 🌱 I’m currently learning **Nextjs and Go**
 
-- 👯 I’m looking to collaborate on Full stack,ML based projets, loving **MERN stack** rn
+- 👯 I’m looking to collaborate on Full stack, ML based projets, loving **MERN stack** rn
 
 - 👨‍💻 All of my projects are available at [https://deeptanshu.vercel.app/](https://deeptanshu.vercel.app/)
 
