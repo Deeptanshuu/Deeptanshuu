@@ -2,7 +2,7 @@
 <h3 align="center">A passionate software developer from India</h3>
 
 - 🌱 I'm currently learning **Deep Learning**
-- 👯 I'm looking to collaborate on **Full stack and ML-based projects**, loving **MERN stack** right now
+- 👯 I'm looking to collaborate on **Full stack and ML-based projects**.
 - 👨‍💻 All of my projects are available at [https://deeptanshu.vercel.app/](https://deeptanshu.vercel.app/)
 - 📫 Reach me at **laldeeptanshu96@gmail.com**
 - 📄 Know about my experiences [https://deeptanshu.vercel.app/resume.pdf](https://deeptanshu.vercel.app/resume.pdf)
