@@ -1,5 +1,5 @@
 <h1 align="center">Hi 👋, I'm Deeptanshu Lal</h1>
-<h3 align="center">A passionate software developer from India</h3>
+<h3 align="center">A software developer from India</h3>
 
 - 🌱 I'm currently learning **Deep Learning**
 - 👯 I'm looking to collaborate on **Full stack and ML-based projects**.
