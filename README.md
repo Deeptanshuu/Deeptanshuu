@@ -1,7 +1,7 @@
 <h1 align="center">Hi 👋, I'm Deeptanshu Lal</h1>
 <h3 align="center">A software developer based in Mumbai, IN</h3>
 
-- 🌱 I'm currently learning **Deep Learning**
+- 🌱 I'm currently learning **Scalable and distributed backends**
 - 👯 I'm looking to collaborate on **Full stack and ML-based projects**.
 - 👨‍💻 All of my projects are available at [https://deeptanshu.tech/](https://deeptanshu.tech/)
 - 📫 Reach me at **laldeeptanshu96@gmail.com**
