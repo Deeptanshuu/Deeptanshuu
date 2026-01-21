@@ -5,7 +5,7 @@
 - 👯 I'm looking to collaborate on **Full stack and ML-based projects**.
 - 👨‍💻 All of my projects are available at [https://deeptanshu.tech/](https://deeptanshu.tech/)
 - 📫 Reach me at **laldeeptanshu96@gmail.com**
-- 📄 Know about my experiences [https://deeptanshu.tech/resume.pdf](https://deeptanshu.teach/resume.pdf)
+- 📄 Know about my experiences [https://deeptanshu.tech/resume.pdf](https://deeptanshu.tech/resume.pdf)
 
 <h3 align="left">Connect with me:</h3>
 <p align="left">
