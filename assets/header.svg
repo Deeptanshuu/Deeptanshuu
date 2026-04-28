@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 320" preserveAspectRatio="xMidYMid meet">
+  <style>
+    svg {
+      --grid: rgba(0,0,0,0.05);
+      --reg: #a3a3a3;
+      --reg-text: #737373;
+      --edge: #a1a1aa;
+      --edge-faint: #d4d4d8;
+      --node-fill: #fafafa;
+      --node-stroke: #525252;
+      --node-tag: #737373;
+      --accent: #c2410c;
+      --self-core: #fff7ed;
+      --self-glow-stop: #c2410c;
+      --self-label: #c2410c;
+      --self-status: #525252;
+      --title: #171717;
+      --subtitle: #525252;
+      --rule: #d4d4d8;
+      font-family: ui-monospace, 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+    }
+    @media (prefers-color-scheme: dark) {
+      svg {
+        --grid: rgba(255,255,255,0.04);
+        --reg: #525252;
+        --reg-text: #525252;
+        --edge: #3f3f46;
+        --edge-faint: #27272a;
+        --node-fill: #0a0a0a;
+        --node-stroke: #737373;
+        --node-tag: #525252;
+        --accent: #ec5a35;
+        --self-core: #fef3ec;
+        --self-glow-stop: #ec5a35;
+        --self-label: #ec5a35;
+        --self-status: #a3a3a3;
+        --title: #fafafa;
+        --subtitle: #737373;
+        --rule: #27272a;
+      }
+    }
+    .grid-bg { fill: var(--grid); }
+    .reg-mark { stroke: var(--reg); fill: none; opacity: 0.65; }
+    .reg-text { fill: var(--reg-text); font-size: 9px; letter-spacing: 1.5px; }
+    .edge { stroke: var(--edge); stroke-width: 0.9; fill: none; }
+    .edge-faint { stroke: var(--edge-faint); stroke-width: 0.9; fill: none; }
+    .edge-faint-dash { stroke: var(--edge-faint); stroke-width: 0.9; fill: none; stroke-dasharray: 2 4; }
+    .node { fill: var(--node-fill); stroke: var(--node-stroke); stroke-width: 1.2; }
+    .node-tag { fill: var(--node-tag); font-size: 8px; letter-spacing: 0.5px; }
+    .pulse { fill: var(--accent); }
+    .self-ring { fill: none; stroke: var(--accent); stroke-width: 1.2; }
+    .self-body { fill: var(--accent); }
+    .self-core { fill: var(--self-core); }
+    .self-line { stroke: var(--accent); stroke-width: 0.8; opacity: 0.65; }
+    .self-label { fill: var(--self-label); font-size: 9px; letter-spacing: 1.2px; }
+    .self-status { fill: var(--self-status); font-size: 8px; letter-spacing: 0.5px; }
+    .title { fill: var(--title); font-size: 38px; font-weight: 500; letter-spacing: -1.2px; }
+    .subtitle { fill: var(--subtitle); font-size: 10px; letter-spacing: 3px; }
+    .rule { stroke: var(--rule); stroke-width: 0.5; }
+  </style>
+
+  <defs>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" class="grid-bg" stroke-width="0.5"/>
+    </pattern>
+    <radialGradient id="self-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="var(--self-glow-stop)" stop-opacity="0.4"/>
+      <stop offset="60%" stop-color="var(--self-glow-stop)" stop-opacity="0.07"/>
+      <stop offset="100%" stop-color="var(--self-glow-stop)" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="soft-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="1.1"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="320" fill="url(#grid)"/>
+
+  <g class="reg-mark" stroke-width="0.8">
+    <path d="M 16 16 L 16 28 M 16 16 L 28 16"/>
+    <path d="M 1184 16 L 1184 28 M 1184 16 L 1172 16"/>
+    <path d="M 16 304 L 16 292 M 16 304 L 28 304"/>
+    <path d="M 1184 304 L 1184 292 M 1184 304 L 1172 304"/>
+  </g>
+  <text x="32" y="22" class="reg-text">SYS · NODE_SPEC · v1</text>
+  <text x="1168" y="22" class="reg-text" text-anchor="end">2026.04 · MUMBAI</text>
+
+  <g>
+    <line x1="180" y1="100" x2="600" y2="160" class="edge"/>
+    <line x1="340" y1="62" x2="600" y2="160" class="edge"/>
+    <line x1="820" y1="72" x2="600" y2="160" class="edge"/>
+    <line x1="1010" y1="118" x2="600" y2="160" class="edge"/>
+    <line x1="270" y1="218" x2="600" y2="160" class="edge"/>
+    <line x1="920" y1="232" x2="600" y2="160" class="edge"/>
+    <line x1="180" y1="100" x2="340" y2="62" class="edge-faint"/>
+    <line x1="820" y1="72" x2="1010" y2="118" class="edge-faint"/>
+    <line x1="180" y1="100" x2="270" y2="218" class="edge-faint"/>
+    <line x1="1010" y1="118" x2="920" y2="232" class="edge-faint"/>
+    <line x1="340" y1="62" x2="820" y2="72" class="edge-faint-dash"/>
+    <line x1="270" y1="218" x2="920" y2="232" class="edge-faint-dash"/>
+  </g>
+
+  <g class="node">
+    <circle cx="180" cy="100" r="4">
+      <animate attributeName="opacity" values="0.5;1;0.5" dur="3.2s" begin="0s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="340" cy="62" r="4">
+      <animate attributeName="opacity" values="0.5;1;0.5" dur="2.8s" begin="0.4s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="820" cy="72" r="4">
+      <animate attributeName="opacity" values="0.5;1;0.5" dur="3.6s" begin="0.9s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="1010" cy="118" r="4">
+      <animate attributeName="opacity" values="0.5;1;0.5" dur="3.0s" begin="1.4s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="270" cy="218" r="4">
+      <animate attributeName="opacity" values="0.5;1;0.5" dur="3.4s" begin="0.7s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="920" cy="232" r="4">
+      <animate attributeName="opacity" values="0.5;1;0.5" dur="2.9s" begin="1.8s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+
+  <g class="node-tag">
+    <text x="180" y="88" text-anchor="middle">0x1a3</text>
+    <text x="340" y="50" text-anchor="middle">0x2bc</text>
+    <text x="820" y="60" text-anchor="middle">0x4f7</text>
+    <text x="1010" y="106" text-anchor="middle">0x5e2</text>
+    <text x="270" y="240" text-anchor="middle">0x6d9</text>
+    <text x="920" y="254" text-anchor="middle">0x7a1</text>
+  </g>
+
+  <g class="pulse">
+    <circle r="2.2">
+      <animateMotion dur="3.4s" repeatCount="indefinite" path="M 180 100 L 600 160"/>
+      <animate attributeName="opacity" values="0;1;1;0" dur="3.4s" repeatCount="indefinite"/>
+    </circle>
+    <circle r="2.2">
+      <animateMotion dur="4.2s" begin="0.6s" repeatCount="indefinite" path="M 820 72 L 600 160"/>
+      <animate attributeName="opacity" values="0;1;1;0" dur="4.2s" begin="0.6s" repeatCount="indefinite"/>
+    </circle>
+    <circle r="2.2">
+      <animateMotion dur="3.8s" begin="1.2s" repeatCount="indefinite" path="M 920 232 L 600 160"/>
+      <animate attributeName="opacity" values="0;1;1;0" dur="3.8s" begin="1.2s" repeatCount="indefinite"/>
+    </circle>
+    <circle r="2.2">
+      <animateMotion dur="4.6s" begin="2.0s" repeatCount="indefinite" path="M 270 218 L 600 160"/>
+      <animate attributeName="opacity" values="0;1;1;0" dur="4.6s" begin="2.0s" repeatCount="indefinite"/>
+    </circle>
+    <circle r="2.2">
+      <animateMotion dur="3.6s" begin="0.3s" repeatCount="indefinite" path="M 340 62 L 600 160"/>
+      <animate attributeName="opacity" values="0;1;1;0" dur="3.6s" begin="0.3s" repeatCount="indefinite"/>
+    </circle>
+    <circle r="2.2">
+      <animateMotion dur="4.0s" begin="1.6s" repeatCount="indefinite" path="M 1010 118 L 600 160"/>
+      <animate attributeName="opacity" values="0;1;1;0" dur="4.0s" begin="1.6s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+
+  <circle cx="600" cy="160" r="48" fill="url(#self-glow)"/>
+
+  <circle cx="600" cy="160" r="14" class="self-ring" opacity="0.6">
+    <animate attributeName="r" values="14;28;14" dur="2.6s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.7;0;0.7" dur="2.6s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="600" cy="160" r="14" class="self-ring" opacity="0.4">
+    <animate attributeName="r" values="14;36;14" dur="2.6s" begin="0.8s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.4;0;0.4" dur="2.6s" begin="0.8s" repeatCount="indefinite"/>
+  </circle>
+
+  <circle cx="600" cy="160" r="9" class="self-body" filter="url(#soft-glow)"/>
+  <circle cx="600" cy="160" r="9" class="self-body"/>
+  <circle cx="600" cy="160" r="3" class="self-core"/>
+
+  <line x1="612" y1="160" x2="650" y2="160" class="self-line"/>
+  <line x1="650" y1="160" x2="650" y2="146" class="self-line"/>
+  <text x="654" y="143" class="self-label">SELF // 0x4d75</text>
+  <text x="654" y="155" class="self-status">↑ online · accepting connections</text>
+
+  <text x="600" y="270" text-anchor="middle" class="title">deeptanshu lal</text>
+  <text x="600" y="294" text-anchor="middle" class="subtitle">SOFTWARE&#160;&#160;DEVELOPER&#160;&#160;·&#160;&#160;FULL-STACK&#160;&#160;·&#160;&#160;DISTRIBUTED&#160;&#160;SYSTEMS</text>
+
+  <line x1="80" y1="306" x2="1120" y2="306" class="rule"/>
+</svg>
