@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 89 36" preserveAspectRatio="xMidYMid meet">
+  <rect x="0.6" y="0.6" width="88" height="34.8" rx="18" fill="#141416" stroke="#ffffff1c"/>
+  <text x="45" y="23" text-anchor="middle" textLength="63" lengthAdjust="spacingAndGlyphs"
+        font-family="ui-monospace,'JetBrains Mono','SF Mono',Menlo,Consolas,monospace" font-size="13.5" fill="#fafafa">Résumé<tspan dx="6" fill="#e8b339">↗</tspan></text>
+</svg>
