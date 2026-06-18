@@ -8,4 +8,6 @@
   <a href="mailto:hi@deeptanshu.tech"><img alt="hi@deeptanshu.tech" height="30" src="assets/link-email.svg"></a>
 </p>
 
+<img alt="Contribution activity" width="100%" src="assets/contributions.svg">
+
 <p align="center"><sub>made with care · deeptanshu</sub></p>
