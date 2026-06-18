@@ -1,40 +1,47 @@
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/header-dark.svg">
-  <img alt="deeptanshu lal — software developer · mumbai" src="assets/header-light.svg" width="100%">
-</picture>
+<img alt="Deeptanshu Lal — Member of Technical Staff @ Reelsaga Innovations · Mumbai" src="assets/header.svg" width="100%">
 
 <br>
 
-<table width="100%"><tr><td valign="top" width="50%">
-
-### `~/whoami`
+### `// about`
 
 <pre>
-runtime  full-stack · ml-curious
-location mumbai, in
-status   ↑ online · accepting connections
-uptime   23y · learning every day
+role    Member of Technical Staff @ Reelsaga Innovations
+focus   AI / LLMs · Full-Stack · 0 → 1 Product · Applied ML
+based   Mumbai, India
+status  ● open to collaborate
 </pre>
 
-</td><td valign="top" width="50%">
-
-### `~/cat /proc/self/running`
+### `// stack`
 
 <pre>
-pid 001  scaling distributed backends   <em>learning</em>
-pid 002  full-stack systems             <em>open to collab</em>
-pid 003  ml experiments                 <em>open to collab</em>
+frontend   React · Next.js · TypeScript · Tailwind
+backend    Node.js · Express · Python · FastAPI · Flask
+ml / ai    PyTorch · XLM-RoBERTa · BERT · scikit-learn · spaCy
+cloud      AWS · Docker · Nginx
+data       MongoDB · PostgreSQL · Redis
 </pre>
 
-</td></tr></table>
+### `// selected work`
 
-### `~/netstat --listen`
+<table width="100%">
+<tr>
+  <td valign="top" width="50%"><b>Toxic Comment Classification</b><br><sub>multilingual NLP · XLM-RoBERTa, deep learning</sub></td>
+  <td valign="top" width="50%"><b>AI Resume Screener</b><br><sub>BERT analysis + spaCy text processing</sub></td>
+</tr>
+<tr>
+  <td valign="top"><b>RecipeSense</b><br><sub>ML recipe recommender · Flask, Python</sub></td>
+  <td valign="top"><b>Hacktoberfest '24 Live Leaderboard</b><br><sub>GDG RAIT · webhook-driven, 200+ concurrent</sub></td>
+</tr>
+</table>
+
+### `// elsewhere`
 
 <pre>
-:portfolio   →  <a href="https://deeptanshu.tech">deeptanshu.tech</a>
-:resume      →  <a href="https://deeptanshu.tech/resume.pdf">deeptanshu.tech/resume.pdf</a>
-:linkedin    →  <a href="https://linkedin.com/in/deeptanshu-l-6868a4187/">/in/deeptanshu-l-6868a4187</a>
-:smtp        →  <a href="mailto:laldeeptanshu96@gmail.com">laldeeptanshu96@gmail.com</a>
+portfolio   <a href="https://deeptanshu.tech">deeptanshu.tech</a>
+résumé      <a href="https://deeptanshu.tech/resume.pdf">deeptanshu.tech/resume.pdf</a>
+github      <a href="https://github.com/Deeptanshuu">@Deeptanshuu</a>
+linkedin    <a href="https://linkedin.com/in/deeptanshu-l-6868a4187/">/in/deeptanshu-l</a>
+email       <a href="mailto:hi@deeptanshu.tech">hi@deeptanshu.tech</a>
 </pre>
 
-<sub>`──── last sync · 2026.04.28 ────`</sub>
+<sub>made with care · deeptanshu</sub>
