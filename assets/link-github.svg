@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 85 36" preserveAspectRatio="xMidYMid meet">
+  <rect x="0.6" y="0.6" width="84" height="34.8" rx="18" fill="#141416" stroke="#ffffff1c"/>
+  <text x="43" y="23" text-anchor="middle" textLength="49" lengthAdjust="spacingAndGlyphs"
+        font-family="ui-monospace,'JetBrains Mono','SF Mono',Menlo,Consolas,monospace" font-size="13.5" fill="#fafafa">GitHub</text>
+</svg>
