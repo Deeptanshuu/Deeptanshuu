@@ -1,4 +1,4 @@
-name: contribution graph
+name: profile assets
 
 on:
   schedule:
@@ -8,6 +8,7 @@ on:
     branches: [main]
     paths:
       - ".github/scripts/render_contributions.py"
+      - ".github/scripts/render_whoburnedmore.py"
       - ".github/workflows/contributions.yml"
 
 permissions:
@@ -33,13 +34,20 @@ jobs:
           OUT: assets/contributions.svg
         run: python .github/scripts/render_contributions.py
 
+      - name: Render brand-styled token burn panel
+        env:
+          WBM_HANDLE: deeptanshuu
+          OUT: assets/whoburnedmore.svg
+        # public JSON API, no key: /v1/usage/{handle}?period=today|week|year|all
+        run: python .github/scripts/render_whoburnedmore.py
+
       - name: Commit if changed
         run: |
-          if [[ -n "$(git status --porcelain assets/contributions.svg)" ]]; then
+          if [[ -n "$(git status --porcelain assets/contributions.svg assets/whoburnedmore.svg)" ]]; then
             git config user.name  "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add assets/contributions.svg
-            git commit -m "chore: refresh contribution graph"
+            git add assets/contributions.svg assets/whoburnedmore.svg
+            git commit -m "chore: refresh profile assets"
             git push
           else
             echo "no change"
