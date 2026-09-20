@@ -8,9 +8,9 @@
   <a href="mailto:hi@deeptanshu.tech"><img alt="hi@deeptanshu.tech" height="30" src="assets/link-email.svg"></a>
 </p>
 
-<p align="center">
-  <a href="https://whoburnedmore.com/u/deeptanshuu?utm_source=github&amp;utm_medium=profile&amp;utm_campaign=usage-card"><img alt="deeptanshuu's AI token usage" src="https://whoburnedmore.com/api/embeds/deeptanshuu?style=stats&amp;theme=dark&amp;accent=ember&amp;period=all"></a>
-</p>
+<!-- whoburnedmore:start -->
+[![deeptanshuu's AI token usage](https://whoburnedmore.com/api/embeds/deeptanshuu?style=stats&theme=dark&accent=ember&period=all)](https://whoburnedmore.com/u/deeptanshuu?utm_source=github&utm_medium=profile&utm_campaign=usage-card)
+<!-- whoburnedmore:end -->
 
 <img alt="Contribution activity" width="100%" src="assets/contributions.svg">
 
