@@ -3,10 +3,13 @@
 <p align="center">
   <a href="https://deeptanshu.tech"><img alt="Portfolio" height="30" src="assets/link-portfolio.svg"></a>&nbsp;
   <a href="https://deeptanshu.tech/resume.pdf"><img alt="Résumé" height="30" src="assets/link-resume.svg"></a>&nbsp;
-[![deeptanshuu's AI token usage](https://whoburnedmore.com/api/embeds/deeptanshuu?style=stats&theme=dark&accent=ember&period=all)](https://whoburnedmore.com/u/deeptanshuu?utm_source=github&utm_medium=profile&utm_campaign=usage-card)  
-<a href="https://github.com/Deeptanshuu"><img alt="GitHub" height="30" src="assets/link-github.svg"></a>&nbsp;
+  <a href="https://github.com/Deeptanshuu"><img alt="GitHub" height="30" src="assets/link-github.svg"></a>&nbsp;
   <a href="https://linkedin.com/in/deeptanshu-l-6868a4187/"><img alt="LinkedIn" height="30" src="assets/link-linkedin.svg"></a>&nbsp;
   <a href="mailto:hi@deeptanshu.tech"><img alt="hi@deeptanshu.tech" height="30" src="assets/link-email.svg"></a>
+</p>
+
+<p align="center">
+  <a href="https://whoburnedmore.com/u/deeptanshuu?utm_source=github&amp;utm_medium=profile&amp;utm_campaign=usage-card"><img alt="deeptanshuu's AI token usage" src="https://whoburnedmore.com/api/embeds/deeptanshuu?style=stats&amp;theme=dark&amp;accent=ember&amp;period=all"></a>
 </p>
 
 <img alt="Contribution activity" width="100%" src="assets/contributions.svg">
