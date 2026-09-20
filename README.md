@@ -9,7 +9,11 @@
 </p>
 
 <!-- whoburnedmore:start -->
+<div align="center">
+
 [![deeptanshuu's AI token usage](https://whoburnedmore.com/api/embeds/deeptanshuu?style=stats&theme=dark&accent=ember&period=all)](https://whoburnedmore.com/u/deeptanshuu?utm_source=github&utm_medium=profile&utm_campaign=usage-card)
+
+</div>
 <!-- whoburnedmore:end -->
 
 <img alt="Contribution activity" width="100%" src="assets/contributions.svg">
