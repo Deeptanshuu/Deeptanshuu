@@ -3,12 +3,14 @@ name: profile assets
 on:
   schedule:
     - cron: "17 3 * * *"   # daily, 03:17 UTC
+    - cron: "50 23 * * *"  # just before UTC midnight, so the day's per-tool split is near complete
   workflow_dispatch:        # manual run button
   push:
     branches: [main]
     paths:
       - ".github/scripts/render_contributions.py"
       - ".github/scripts/render_whoburnedmore.py"
+      - ".github/scripts/tool-icons/**"
       - ".github/workflows/contributions.yml"
 
 permissions:
@@ -38,15 +40,17 @@ jobs:
         env:
           WBM_HANDLE: deeptanshuu
           OUT: assets/whoburnedmore.svg
+          HISTORY: data/token-history.json
         # public JSON API, no key: /v1/usage/{handle}?period=today|week|year|all
+        # also records today's per-tool split in HISTORY (the API has no per-day split)
         run: python .github/scripts/render_whoburnedmore.py
 
       - name: Commit if changed
         run: |
-          if [[ -n "$(git status --porcelain assets/contributions.svg assets/whoburnedmore.svg)" ]]; then
+          if [[ -n "$(git status --porcelain assets/contributions.svg assets/whoburnedmore.svg data/token-history.json)" ]]; then
             git config user.name  "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add assets/contributions.svg assets/whoburnedmore.svg
+            git add assets/contributions.svg assets/whoburnedmore.svg data/token-history.json
             git commit -m "chore: refresh profile assets"
             git push
           else

@@ -1,0 +1,8 @@
+{
+ "source": "https://api.whoburnedmore.com/v1/usage (period=today, byTool)",
+ "days": {
+  "2026-10-12": {
+   "hermes": 3391887
+  }
+ }
+}
