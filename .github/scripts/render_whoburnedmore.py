@@ -115,7 +115,8 @@ def mock():
                    "byTool":[{"tool":t,"tokens":int(allt*f)} for t,f in shares.items()]},
             "today":{"totals":tot(daily[-1]["tokens"])},
             "week":{"totals":tot(sum(d["tokens"] for d in daily[-7:]))},
-            "year":{"totals":tot(sum(d["tokens"] for d in daily)*6.4)}}
+            "year":{"totals":tot(sum(d["tokens"] for d in daily)*6.4),
+                    "byTool":[{"tool":t,"tokens":int(allt*.9*f)} for t,f in shares.items()]}}
 
 def human(n):
     if n>=1e9: return f"{n/1e9:.1f}B"
@@ -162,11 +163,13 @@ def short(s):
     m=int(s[5:7]); return f"{['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][m-1]} {int(s[8:10])}"
 
 def bars_bg(data):
-    """30-day daily bars, stacked by tool. Only days the history covers get a bar (the API
-    has no per-day split); earlier days are a faint tick so the 30-day axis still reads."""
+    """30-day daily bars, stacked by tool. Days the history covers use their recorded split;
+    earlier days (the API has no per-day split) apportion the real daily total by this
+    year's per-tool shares."""
     daily=(data["all"].get("daily") or [])[-30:]
     if not daily: return ""
     hist=data.get("history") or {}
+    est={t["tool"]:t["tokens"] for t in (data.get("year") or data["all"]).get("byTool") or []}
     mx=max(d["tokens"] for d in daily) or 1
     n=len(daily)
     span=RIGHT-PADL
@@ -178,11 +181,9 @@ def bars_bg(data):
         v=d["tokens"]
         x=PADL+i*step+(step-bw)/2
         h=minh if v<=0 else max(minh, maxh*(v/mx)**p)
-        rows=group(hist.get(d["date"]) or {}) if v>0 else []
+        rows=group(hist.get(d["date"]) or est) if v>0 else []
         tot=sum(t for _,t in rows)
-        if not tot:
-            out.append(f'<rect x="{x:.1f}" y="{base-1:.1f}" width="{bw:.1f}" height="1" fill="{HAIR}"/>')
-            continue
+        if not tot: continue
         cls="today" if i==n-1 else "bar"
         out.append(f'<g class="{cls}" style="animation-delay:{i*25}ms">')
         cid=f"b{i}"
@@ -194,11 +195,7 @@ def bars_bg(data):
             y-=sh
         out.append('</g></g>')
     right=f"{short(daily[0]['date'])} &#8594; {short(daily[-1]['date'])}"
-    tracked=sorted(d["date"] for d in daily if hist.get(d["date"]))
-    left="LAST 30 DAYS &#183; BY TOOL"
-    if tracked and tracked[0]!=daily[0]["date"]:
-        left+=f'<tspan letter-spacing="0" fill="{SEP}">  &#183;  tracked since {short(tracked[0])}</tspan>'
-    out.append(f'<text x="{PADL}" y="152" font-family="{MONO}" font-size="10" letter-spacing="2" fill="{FAINT}">{left}</text>')
+    out.append(f'<text x="{PADL}" y="152" font-family="{MONO}" font-size="10" letter-spacing="2" fill="{FAINT}">LAST 30 DAYS</text>')
     out.append(f'<text x="{RIGHT}" y="152" text-anchor="end" font-family="{MONO}" font-size="10" fill="{FAINT}">{right}</text>')
     return "".join(out)
 
