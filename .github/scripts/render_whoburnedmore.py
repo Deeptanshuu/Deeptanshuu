@@ -19,18 +19,19 @@ import os, re, json, ssl, datetime, urllib.request, urllib.error
 BG="#09090a"; HAIR="#ffffff14"
 FG="#fafafa"; DIM2="#ffffff9e"; FAINT="#ffffff55"
 SEP="#ffffff40"   # dim "·" separator, as in the site\'s chips
-NOSPLIT="#2a2b2f"  # daily bar with no per-tool history yet
+# green ramp from the site's GitHub calendar, for days with no per-tool split yet
+LEVELS=["#1a1b1e","#0e3a24","#15683b","#22a155","#3ddc84"]
 MONO="ui-monospace,'JetBrains Mono','SF Mono',Menlo,Consolas,monospace"
 
 # width identical to render_contributions.py so both panels share one grid
-W=833; H=316
+W=833; H=328
 
 # tools shown on their own (stacking order, bottom up); everything else is "Other".
 # name, colour (brand colour where the brand has one), icon in tool-icons/
 TOOLS={
     "claude":  ("Claude Code","#d97757","claudecode"),
     "pi":      ("Pi",         "#a78bfa","pi"),
-    "hermes":  ("Hermes",     "#f472b6","hermesagent"),
+    "hermes":  ("Hermes",     "#ffbf00","hermesagent"),   # Hermes Agent's default ui_accent
     "opencode":("OpenCode",   "#2dd4bf","opencode"),
     "cursor":  ("Cursor",     "#9ca3af","cursor"),
     "codex":   ("Codex",      "#fafafa","codex"),
@@ -165,7 +166,7 @@ def bars_bg(data):
     span=RIGHT-PADL
     step=span/n
     bw=min(18.0, step-6)
-    base=194.0; maxh=46.0; minh=2.0; p=0.45   # sqrt-ish: flat days stay readable
+    base=206.0; maxh=44.0; minh=2.0; p=0.45   # sqrt-ish: flat days stay readable
     out=[]
     for i,d in enumerate(daily):
         v=d["tokens"]
@@ -176,7 +177,9 @@ def bars_bg(data):
         rows=group(hist.get(d["date"]) or {}) if v>0 else []
         tot=sum(t for _,t in rows)
         if not tot:
-            out.append(f'<rect x="{x:.1f}" y="{base-h:.1f}" width="{bw:.1f}" height="{h:.1f}" rx="2.5" fill="{NOSPLIT}"/></g>')
+            r=v/mx
+            q=0 if v<=0 else (4 if r>0.5 else 3 if r>0.2 else 2 if r>0.05 else 1)
+            out.append(f'<rect x="{x:.1f}" y="{base-h:.1f}" width="{bw:.1f}" height="{h:.1f}" rx="2.5" fill="{LEVELS[q]}"/></g>')
             continue
         cid=f"b{i}"
         out.append(f'<clipPath id="{cid}"><rect x="{x:.1f}" y="{base-h:.1f}" width="{bw:.1f}" height="{h:.1f}" rx="2.5"/></clipPath><g clip-path="url(#{cid})">')
@@ -186,10 +189,7 @@ def bars_bg(data):
             out.append(f'<rect x="{x:.1f}" y="{y-sh:.2f}" width="{bw:.1f}" height="{sh:.2f}" fill="{meta(key)[1]}"/>')
             y-=sh
         out.append('</g></g>')
-    split=[d["date"] for d in daily if hist.get(d["date"])]
     right=f"{short(daily[0]['date'])} &#8594; {short(daily[-1]['date'])}"
-    if split and split[0]!=daily[0]["date"]:
-        right=f"split by tool from {short(split[0])} <tspan fill=\"{SEP}\">&#183;</tspan> "+right
     out.append(f'<text x="{PADL}" y="152" font-family="{MONO}" font-size="10" letter-spacing="2" fill="{FAINT}">LAST 30 DAYS</text>')
     out.append(f'<text x="{RIGHT}" y="152" text-anchor="end" font-family="{MONO}" font-size="10" fill="{FAINT}">{right}</text>')
     return "".join(out)
@@ -201,10 +201,18 @@ def tools_bg(data):
     named=sorted([r for r in rows if r[0]!="other"], key=lambda r:-r[1])
     rows=named+[r for r in rows if r[0]=="other"]
     total=sum(t for _,t in rows)
-    span=RIGHT-PADL; y=238; bh=10; gap=2; minw=3.0
+    span=RIGHT-PADL; y=250; bh=10; gap=2; minw=3.0
     # every group gets at least minw px so small ones stay visible; the rest is proportional
     free=span-gap*(len(rows)-1)-minw*len(rows)
-    out=[f'<text x="{PADL}" y="226" font-family="{MONO}" font-size="10" letter-spacing="2" fill="{FAINT}">BY TOOL &#183; ALL TIME</text>']
+    out=[f'<text x="{PADL}" y="238" font-family="{MONO}" font-size="10" letter-spacing="2" fill="{FAINT}">BY TOOL &#183; ALL TIME</text>']
+    # key for the daily bars: coloured = split by tool, green = day predates the history
+    hist=data.get("history") or {}
+    daily=(data["all"].get("daily") or [])[-30:]
+    if any(not hist.get(d["date"]) for d in daily if d["tokens"]>0):
+        since=f" before {short(min(hist))}" if hist else ""
+        label=f"daily total only{since}"
+        out.append(f'<text x="{RIGHT-14}" y="238" text-anchor="end" font-family="{MONO}" font-size="10" fill="{FAINT}">{label}</text>'
+                   f'<rect x="{RIGHT-8}" y="230" width="8" height="8" rx="1.5" fill="{LEVELS[3]}"/>')
     x=float(PADL)
     out.append('<g class="wipe">')
     for key,t in rows:
@@ -214,7 +222,7 @@ def tools_bg(data):
     out.append('</g>')
     cols=4; gut=24; colw=(span+gut)/cols   # last column ends flush at RIGHT
     for i,(key,t) in enumerate(rows):
-        cx=PADL+(i%cols)*colw; cy=272+(i//cols)*22
+        cx=PADL+(i%cols)*colw; cy=284+(i//cols)*22
         name,color,_=meta(key)
         pct=100*t/total
         pcts=f"{pct:.0f}%" if pct>=1 else "&lt;1%"
@@ -276,7 +284,7 @@ def render(data):
   <text x="{PADL}" y="132" font-family="{MONO}" font-size="10" letter-spacing="1.5" fill="{FAINT}">TOKENS BURNED &#183; ALL TIME</text></g>
   <g class="rise" style="animation-delay:150ms">{stats}</g>
   {bars_bg(data)}
-  <line x1="{PADL}" y1="208" x2="{RIGHT}" y2="208" stroke="{HAIR}"/>
+  <line x1="{PADL}" y1="220" x2="{RIGHT}" y2="220" stroke="{HAIR}"/>
   {tools_bg(data)}
 </svg>
 '''
