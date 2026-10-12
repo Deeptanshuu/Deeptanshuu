@@ -19,7 +19,7 @@ MONO="ui-monospace,'JetBrains Mono','SF Mono',Menlo,Consolas,monospace"
 
 # identical to render_contributions.py so both panels share one grid
 W=833; H=209
-PADL=66; PADR=28; RIGHT=W-PADR
+PADL=33; PADR=33; RIGHT=W-PADR   # symmetric inset so the card reads centred
 
 API="https://api.whoburnedmore.com/v1/usage"
 PERIODS=["today","week","year","all"]
@@ -123,11 +123,9 @@ def render(data):
         f'<text x="{x}" y="112" text-anchor="end" font-family="{MONO}" font-size="22" fill="{DIM2}">{val}</text>'
         for (lbl,val),x in zip(cols,xs))
     synced=(data["all"].get("lastSyncedAt") or "")[:10] or datetime.date.today().isoformat()
-    cost=allt.get("costUSD")
     active=allt.get("activeDays")
     bits=[]
     if active: bits.append(f"{active} active days")
-    if cost: bits.append(f"est. ${human(cost)} API value")
     bits.append(f"synced {synced} UTC")
     meta=f' <tspan fill="{GOLD}">&#183;</tspan> '.join(bits)
     return f'''<?xml version="1.0" encoding="UTF-8"?>

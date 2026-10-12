@@ -19,8 +19,10 @@ LEVELS=["#16161a","#4a3b18","#8a6a20","#c0922c","#e8b339"]
 MONO="ui-monospace,'JetBrains Mono','SF Mono',Menlo,Consolas,monospace"
 
 CELL=11; GAP=3; STEP=CELL+GAP
-GX=66; GY=70          # grid origin
-PADR=28
+PAD=33                # symmetric outer inset (matches render_whoburnedmore.py)
+GUTTER=28             # room for the Mon/Wed/Fri labels left of the grid
+GX=PAD+GUTTER; GY=70  # grid origin
+PADR=PAD
 W=GX + 53*STEP - GAP + PADR
 H=GY + 7*STEP - GAP + 44
 
@@ -104,9 +106,9 @@ def render(total, weeks, meta):
     return f'''<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" preserveAspectRatio="xMidYMid meet">
   <rect x="1" y="1" width="{W-2}" height="{H-2}" rx="14" fill="{BG}" stroke="{HAIR}"/>
-  <text x="{GX-0}" y="38" font-family="{MONO}" font-size="11" letter-spacing="3" fill="{FAINT}">CONTRIBUTION ACTIVITY</text>
+  <text x="{PAD}" y="38" font-family="{MONO}" font-size="11" letter-spacing="3" fill="{FAINT}">CONTRIBUTION ACTIVITY</text>
   <text x="{W-PADR}" y="38" text-anchor="end" font-family="{MONO}" font-size="13" fill="{DIM2}">{total:,} commits <tspan fill="{GOLD}">·</tspan> {cur}d streak</text>
-  <line x1="{GX}" y1="50" x2="{W-PADR}" y2="50" stroke="{HAIR}"/>
+  <line x1="{PAD}" y1="50" x2="{W-PADR}" y2="50" stroke="{HAIR}"/>
   {months_svg}
   {daylbl}
   {"".join(cells)}
