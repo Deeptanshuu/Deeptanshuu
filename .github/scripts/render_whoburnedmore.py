@@ -38,6 +38,23 @@ TOOLS={
 OTHER=("Other","#6b7280",None)
 ICON_DIR=os.path.join(os.path.dirname(os.path.abspath(__file__)),"tool-icons")
 HISTORY_KEEP=400   # days of per-tool history to retain
+GREEN="#34d058"    # the site's live-status dot
+
+# Load-in + idle motion. GitHub serves these as <img>, so there is no hover;
+# everything plays on load, and only "live" bits loop. Reduced motion = static.
+EASE="cubic-bezier(.22,1,.36,1)"
+STYLE=f"""<style>
+@keyframes grow{{from{{transform:scaleY(0)}}to{{transform:scaleY(1)}}}}
+@keyframes wipe{{from{{transform:scaleX(0)}}to{{transform:scaleX(1)}}}}
+@keyframes rise{{from{{opacity:0;transform:translateY(6px)}}to{{opacity:1;transform:none}}}}
+@keyframes breathe{{0%,100%{{opacity:1}}50%{{opacity:.45}}}}
+.bar{{transform-box:fill-box;transform-origin:50% 100%;animation:grow .8s {EASE} both}}
+.wipe{{transform-box:fill-box;transform-origin:0 50%;animation:wipe 1.1s {EASE} .5s both}}
+.rise{{animation:rise .7s {EASE} both}}
+.live{{animation:breathe 2.4s ease-in-out infinite}}
+.today{{animation:grow .8s {EASE} both,breathe 3s ease-in-out 1.6s infinite}}
+@media (prefers-reduced-motion:reduce){{*{{animation:none!important}}}}
+</style>"""
 PADL=33; PADR=33; RIGHT=W-PADR   # symmetric inset so the card reads centred
 
 API="https://api.whoburnedmore.com/v1/usage"
@@ -153,11 +170,13 @@ def bars_bg(data):
     for i,d in enumerate(daily):
         v=d["tokens"]
         x=PADL+i*step+(step-bw)/2
+        cls="today" if i==n-1 else "bar"
+        out.append(f'<g class="{cls}" style="animation-delay:{i*25}ms">')
         h=minh if v<=0 else max(minh, maxh*(v/mx)**p)
         rows=group(hist.get(d["date"]) or {}) if v>0 else []
         tot=sum(t for _,t in rows)
         if not tot:
-            out.append(f'<rect x="{x:.1f}" y="{base-h:.1f}" width="{bw:.1f}" height="{h:.1f}" rx="2.5" fill="{NOSPLIT}"/>')
+            out.append(f'<rect x="{x:.1f}" y="{base-h:.1f}" width="{bw:.1f}" height="{h:.1f}" rx="2.5" fill="{NOSPLIT}"/></g>')
             continue
         cid=f"b{i}"
         out.append(f'<clipPath id="{cid}"><rect x="{x:.1f}" y="{base-h:.1f}" width="{bw:.1f}" height="{h:.1f}" rx="2.5"/></clipPath><g clip-path="url(#{cid})">')
@@ -166,7 +185,7 @@ def bars_bg(data):
             sh=h*t/tot
             out.append(f'<rect x="{x:.1f}" y="{y-sh:.2f}" width="{bw:.1f}" height="{sh:.2f}" fill="{meta(key)[1]}"/>')
             y-=sh
-        out.append('</g>')
+        out.append('</g></g>')
     split=[d["date"] for d in daily if hist.get(d["date"])]
     right=f"{short(daily[0]['date'])} &#8594; {short(daily[-1]['date'])}"
     if split and split[0]!=daily[0]["date"]:
@@ -187,19 +206,21 @@ def tools_bg(data):
     free=span-gap*(len(rows)-1)-minw*len(rows)
     out=[f'<text x="{PADL}" y="226" font-family="{MONO}" font-size="10" letter-spacing="2" fill="{FAINT}">BY TOOL &#183; ALL TIME</text>']
     x=float(PADL)
+    out.append('<g class="wipe">')
     for key,t in rows:
         w=minw+free*t/total
         out.append(f'<rect x="{x:.1f}" y="{y}" width="{w:.1f}" height="{bh}" rx="2" fill="{meta(key)[1]}"/>')
         x+=w+gap
+    out.append('</g>')
     cols=4; gut=24; colw=(span+gut)/cols   # last column ends flush at RIGHT
     for i,(key,t) in enumerate(rows):
         cx=PADL+(i%cols)*colw; cy=272+(i//cols)*22
         name,color,_=meta(key)
         pct=100*t/total
         pcts=f"{pct:.0f}%" if pct>=1 else "&lt;1%"
-        out.append(icon(key,cx,cy-10.5,13,color)+
+        out.append(f'<g class="rise" style="animation-delay:{900+i*70}ms">'+icon(key,cx,cy-10.5,13,color)+
                    f'<text x="{cx+20:.1f}" y="{cy}" font-family="{MONO}" font-size="11" fill="{DIM2}">{name}</text>'
-                   f'<text x="{cx+colw-gut:.1f}" y="{cy}" text-anchor="end" font-family="{MONO}" font-size="11" fill="{FAINT}">{human(t)} <tspan fill="{SEP}">&#183;</tspan> {pcts}</text>')
+                   f'<text x="{cx+colw-gut:.1f}" y="{cy}" text-anchor="end" font-family="{MONO}" font-size="11" fill="{FAINT}">{human(t)} <tspan fill="{SEP}">&#183;</tspan> {pcts}</text></g>')
     return "".join(out)
 
 def load_history(path):
@@ -242,15 +263,18 @@ def render(data):
     if active: bits.append(f"{active} active days")
     bits.append(f"synced {synced} UTC")
     meta=f' <tspan fill="{SEP}">&#183;</tspan> '.join(bits)
+    meta_w=len(" · ".join(bits))*13*0.6
+    dot=f'<circle class="live" cx="{RIGHT-meta_w-10:.1f}" cy="33.5" r="3.5" fill="{GREEN}"/>' 
     return f'''<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" preserveAspectRatio="xMidYMid meet">
+  {STYLE}
   <rect x="1" y="1" width="{W-2}" height="{H-2}" rx="14" fill="{BG}" stroke="{HAIR}"/>
   {rule()}
-  <text x="{RIGHT}" y="38" text-anchor="end" font-family="{MONO}" font-size="13" fill="{DIM2}">{meta}</text>
+  {dot}<text x="{RIGHT}" y="38" text-anchor="end" font-family="{MONO}" font-size="13" fill="{DIM2}">{meta}</text>
   <line x1="{PADL}" y1="50" x2="{RIGHT}" y2="50" stroke="{HAIR}"/>
-  <text x="{PADL}" y="112" font-family="{MONO}" font-size="52" fill="{FG}">{human(allt["tokens"])}</text>
-  <text x="{PADL}" y="132" font-family="{MONO}" font-size="10" letter-spacing="1.5" fill="{FAINT}">TOKENS BURNED &#183; ALL TIME</text>
-  {stats}
+  <g class="rise"><text x="{PADL}" y="112" font-family="{MONO}" font-size="52" fill="{FG}">{human(allt["tokens"])}</text>
+  <text x="{PADL}" y="132" font-family="{MONO}" font-size="10" letter-spacing="1.5" fill="{FAINT}">TOKENS BURNED &#183; ALL TIME</text></g>
+  <g class="rise" style="animation-delay:150ms">{stats}</g>
   {bars_bg(data)}
   <line x1="{PADL}" y1="208" x2="{RIGHT}" y2="208" stroke="{HAIR}"/>
   {tools_bg(data)}

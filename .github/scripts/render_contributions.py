@@ -18,6 +18,17 @@ SEP="#ffffff40"   # dim "·" separator, as in the site\'s chips
 LEVELS=["#1a1b1e","#0e3a24","#15683b","#22a155","#3ddc84"]
 MONO="ui-monospace,'JetBrains Mono','SF Mono',Menlo,Consolas,monospace"
 
+# Load-in + idle motion (see render_whoburnedmore.py): weeks fade in left to
+# right, today's cell breathes. GitHub shows this as <img>, so no hover.
+STYLE="""<style>
+@keyframes pop{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}
+@keyframes breathe{0%,100%{opacity:1}50%{opacity:.4}}
+.wk rect{transform-box:fill-box;transform-origin:center;animation:pop .5s cubic-bezier(.22,1,.36,1) both;animation-delay:inherit}
+@keyframes show{from{opacity:0}to{opacity:1}}
+.now{animation:show .4s .8s both,breathe 2.4s ease-in-out 1.6s infinite}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>"""
+
 CELL=11; GAP=3; STEP=CELL+GAP
 PAD=33                # symmetric outer inset (matches render_whoburnedmore.py)
 GUTTER=28             # room for the Mon/Wed/Fri labels left of the grid
@@ -92,9 +103,14 @@ def render(total, weeks, meta):
         if m!=last_m:
             month_lbls.append((GX + wi*STEP, MONTHS[m-1])); last_m=m
     for wi,w in enumerate(weeks):
+        cells.append(f'<g class="wk" style="animation-delay:{wi*14}ms">')
         for di,c in enumerate(w):
             x=GX+wi*STEP; y=GY+di*STEP
             cells.append(f'<rect x="{x}" y="{y}" width="{CELL}" height="{CELL}" rx="2.5" fill="{LEVELS[level(c)]}"/>')
+        cells.append('</g>')
+    # today = last day of the last week; a breathing outline on top (the cell itself keeps its pop-in)
+    tx=GX+(len(weeks)-1)*STEP; ty=GY+(len(weeks[-1])-1)*STEP
+    cells.append(f'<rect class="now" x="{tx-1.5}" y="{ty-1.5}" width="{CELL+3}" height="{CELL+3}" rx="3.5" fill="none" stroke="{FG}" stroke-opacity=".7"/>')
     months_svg="".join(f'<text x="{x}" y="{GY-10}" font-family="{MONO}" font-size="10" fill="{DIM}">{m}</text>'
                        for x,m in month_lbls)
     daylbl="".join(f'<text x="{GX-10}" y="{GY+r*STEP+CELL-1.5}" text-anchor="end" font-family="{MONO}" font-size="10" fill="{FAINT}">{d}</text>'
@@ -105,6 +121,7 @@ def render(total, weeks, meta):
     cur,best=streaks(weeks,meta)
     return f'''<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" preserveAspectRatio="xMidYMid meet">
+  {STYLE}
   <rect x="1" y="1" width="{W-2}" height="{H-2}" rx="14" fill="{BG}" stroke="{HAIR}"/>
   <text x="{PAD}" y="38" font-family="{MONO}" font-size="11" letter-spacing="3" fill="{FAINT}">CONTRIBUTION ACTIVITY</text>
   <text x="{W-PADR}" y="38" text-anchor="end" font-family="{MONO}" font-size="13" fill="{DIM2}">{total:,} commits <tspan fill="{SEP}">&#183;</tspan> {cur}d streak</text>
