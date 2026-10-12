@@ -19,9 +19,6 @@ import os, re, json, ssl, datetime, urllib.request, urllib.error
 BG="#09090a"; HAIR="#ffffff14"
 FG="#fafafa"; DIM2="#ffffff9e"; FAINT="#ffffff55"
 SEP="#ffffff40"   # dim "·" separator, as in the site\'s chips
-# monochrome intensity ramp (the site's white-on-black), for days with no per-tool
-# split yet; green stays with the contribution graph, tool colours mean real splits
-LEVELS=["#1a1b1e","#2c2c30","#4a4a50","#7a7a80","#c8c8cc"]
 MONO="ui-monospace,'JetBrains Mono','SF Mono',Menlo,Consolas,monospace"
 
 # width identical to render_contributions.py so both panels share one grid
@@ -32,7 +29,7 @@ W=833; H=328
 TOOLS={
     "claude":  ("Claude Code","#d97757","claudecode"),
     "pi":      ("Pi",         "#a78bfa","pi"),
-    "hermes":  ("Hermes",     "#4d4dff","hermesagent"),   # site blue #0000f2, lifted to read on black
+    "hermes":  ("Hermes",     "#4d4dff","hermesagent.png"),  # site blue #0000f2, lifted to read on black; official app icon
     "opencode":("OpenCode",   "#8e8b8b","opencode"),      # monochrome brand; icon keeps its own two tones
     "cursor":  ("Cursor",     "#6b7a8f","cursor"),
     "codex":   ("Codex",      "#fafafa","codex"),
@@ -40,7 +37,6 @@ TOOLS={
 OTHER=("Other","#52525b",None)
 ICON_DIR=os.path.join(os.path.dirname(os.path.abspath(__file__)),"tool-icons")
 HISTORY_KEEP=400   # days of per-tool history to retain
-GREEN="#34d058"    # the site's live-status dot
 
 # Load-in + idle motion. GitHub serves these as <img>, so there is no hover;
 # everything plays on load, and only "live" bits loop. Reduced motion = static.
@@ -142,11 +138,19 @@ def meta(key):
 
 _icons={}
 def icon(key, x, y, size, color):
-    """Inline a 24x24 tool icon at (x, y), tinted with color; a dot for Other."""
+    """Inline a tool icon at (x, y): 24x24 SVGs are tinted with color, PNGs (full-colour
+    app icons) are embedded as-is; Other gets a dot."""
     file=meta(key)[2]
     if not file:
         r=size*0.32
         return f'<circle cx="{x+size/2:.1f}" cy="{y+size/2:.1f}" r="{r:.1f}" fill="{color}"/>'
+    if file.endswith(".png"):
+        if file not in _icons:
+            import base64
+            _icons[file]=base64.b64encode(open(os.path.join(ICON_DIR,file),"rb").read()).decode()
+        s=size+1   # app icons carry their own padding; nudge up to match glyph weight
+        return (f'<image x="{x-0.5:.1f}" y="{y-0.5:.1f}" width="{s}" height="{s}" '
+                f'href="data:image/png;base64,{_icons[file]}"/>')
     if file not in _icons:
         svg=open(os.path.join(ICON_DIR,file+".svg")).read()
         inner=re.sub(r"<title>.*?</title>","",svg[svg.index(">")+1:svg.rindex("</svg>")])
@@ -158,7 +162,8 @@ def short(s):
     m=int(s[5:7]); return f"{['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][m-1]} {int(s[8:10])}"
 
 def bars_bg(data):
-    """30-day daily bars; stacked by tool on days the history covers, neutral otherwise."""
+    """30-day daily bars, stacked by tool. Only days the history covers get a bar (the API
+    has no per-day split); earlier days are a faint tick so the 30-day axis still reads."""
     daily=(data["all"].get("daily") or [])[-30:]
     if not daily: return ""
     hist=data.get("history") or {}
@@ -172,16 +177,14 @@ def bars_bg(data):
     for i,d in enumerate(daily):
         v=d["tokens"]
         x=PADL+i*step+(step-bw)/2
-        cls="today" if i==n-1 else "bar"
-        out.append(f'<g class="{cls}" style="animation-delay:{i*25}ms">')
         h=minh if v<=0 else max(minh, maxh*(v/mx)**p)
         rows=group(hist.get(d["date"]) or {}) if v>0 else []
         tot=sum(t for _,t in rows)
         if not tot:
-            r=v/mx
-            q=0 if v<=0 else (4 if r>0.5 else 3 if r>0.2 else 2 if r>0.05 else 1)
-            out.append(f'<rect x="{x:.1f}" y="{base-h:.1f}" width="{bw:.1f}" height="{h:.1f}" rx="2.5" fill="{LEVELS[q]}"/></g>')
+            out.append(f'<rect x="{x:.1f}" y="{base-1:.1f}" width="{bw:.1f}" height="1" fill="{HAIR}"/>')
             continue
+        cls="today" if i==n-1 else "bar"
+        out.append(f'<g class="{cls}" style="animation-delay:{i*25}ms">')
         cid=f"b{i}"
         out.append(f'<clipPath id="{cid}"><rect x="{x:.1f}" y="{base-h:.1f}" width="{bw:.1f}" height="{h:.1f}" rx="2.5"/></clipPath><g clip-path="url(#{cid})">')
         y=base
@@ -191,7 +194,11 @@ def bars_bg(data):
             y-=sh
         out.append('</g></g>')
     right=f"{short(daily[0]['date'])} &#8594; {short(daily[-1]['date'])}"
-    out.append(f'<text x="{PADL}" y="152" font-family="{MONO}" font-size="10" letter-spacing="2" fill="{FAINT}">LAST 30 DAYS</text>')
+    tracked=sorted(d["date"] for d in daily if hist.get(d["date"]))
+    left="LAST 30 DAYS &#183; BY TOOL"
+    if tracked and tracked[0]!=daily[0]["date"]:
+        left+=f'<tspan letter-spacing="0" fill="{SEP}">  &#183;  tracked since {short(tracked[0])}</tspan>'
+    out.append(f'<text x="{PADL}" y="152" font-family="{MONO}" font-size="10" letter-spacing="2" fill="{FAINT}">{left}</text>')
     out.append(f'<text x="{RIGHT}" y="152" text-anchor="end" font-family="{MONO}" font-size="10" fill="{FAINT}">{right}</text>')
     return "".join(out)
 
@@ -206,14 +213,6 @@ def tools_bg(data):
     # every group gets at least minw px so small ones stay visible; the rest is proportional
     free=span-gap*(len(rows)-1)-minw*len(rows)
     out=[f'<text x="{PADL}" y="238" font-family="{MONO}" font-size="10" letter-spacing="2" fill="{FAINT}">BY TOOL &#183; ALL TIME</text>']
-    # key for the daily bars: coloured = split by tool, grey = day predates the history
-    hist=data.get("history") or {}
-    daily=(data["all"].get("daily") or [])[-30:]
-    if any(not hist.get(d["date"]) for d in daily if d["tokens"]>0):
-        since=f" before {short(min(hist))}" if hist else ""
-        label=f"daily total only{since}"
-        out.append(f'<text x="{RIGHT-14}" y="238" text-anchor="end" font-family="{MONO}" font-size="10" fill="{FAINT}">{label}</text>'
-                   f'<rect x="{RIGHT-8}" y="230" width="8" height="8" rx="1.5" fill="{LEVELS[3]}"/>')
     x=float(PADL)
     out.append('<g class="wipe">')
     for key,t in rows:
@@ -273,7 +272,7 @@ def render(data):
     bits.append(f"synced {synced} UTC")
     meta=f' <tspan fill="{SEP}">&#183;</tspan> '.join(bits)
     meta_w=len(" · ".join(bits))*13*0.6
-    dot=f'<circle class="live" cx="{RIGHT-meta_w-10:.1f}" cy="33.5" r="3.5" fill="{GREEN}"/>' 
+    dot=f'<circle class="live" cx="{RIGHT-meta_w-10:.1f}" cy="33.5" r="3" fill="{FG}"/>' 
     return f'''<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" preserveAspectRatio="xMidYMid meet">
   {STYLE}
