@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 114 36" preserveAspectRatio="xMidYMid meet">
-  <rect x="0.6" y="0.6" width="112.8" height="34.8" rx="18" fill="#141416" stroke="#ffffff1c"/>
-  <text x="57" y="23" text-anchor="middle" textLength="88" lengthAdjust="spacingAndGlyphs"
-        font-family="ui-monospace,'JetBrains Mono','SF Mono',Menlo,Consolas,monospace" font-size="13.5" fill="#fafafa">Portfolio<tspan dx="6" fill="#e8b339">↗</tspan></text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 36" preserveAspectRatio="xMidYMid meet">
+  <rect x="0.5" y="0.5" width="119" height="35" rx="2" fill="#09090a" stroke="#ffffff38"/>
+  <path d="M0.5 5.5V0.5H5.5M119.5 30.5V35.5H114.5" fill="none" stroke="#ffffff8c"/>
+  <text x="52.3" y="22.5" text-anchor="middle" textLength="68.6" lengthAdjust="spacingAndGlyphs"
+        font-family="ui-monospace,'JetBrains Mono','SF Mono',Menlo,Consolas,monospace" font-size="12" font-weight="600" letter-spacing="0.48" fill="#eaeaea">PORTFOLIO</text><text x="94.8" y="22.5" font-family="ui-monospace,'JetBrains Mono','SF Mono',Menlo,Consolas,monospace" font-size="12" fill="#ffffff80">↗</text>
 </svg>

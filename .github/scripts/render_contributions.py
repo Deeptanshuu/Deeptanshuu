@@ -10,12 +10,12 @@ Stdlib only — no pip install needed in the Action.
 """
 import os, json, datetime, urllib.request
 
-# ---- brand tokens (rebrand.deeptanshu.tech) ----
+# ---- brand tokens (deeptanshu.tech: monochrome, green accent) ----
 BG="#09090a"; HAIR="#ffffff14"; RULE="#ffffff1c"
 FG="#fafafa"; DIM="#ffffff80"; DIM2="#ffffff9e"; FAINT="#ffffff55"
-GOLD="#e8b339"; GREEN="#34d058"
-# gold intensity ramp: empty -> bright gold (level 0..4)
-LEVELS=["#16161a","#4a3b18","#8a6a20","#c0922c","#e8b339"]
+SEP="#ffffff40"   # dim "·" separator, as in the site\'s chips
+# green ramp from the site's GitHub calendar: empty -> bright (level 0..4)
+LEVELS=["#1a1b1e","#0e3a24","#15683b","#22a155","#3ddc84"]
 MONO="ui-monospace,'JetBrains Mono','SF Mono',Menlo,Consolas,monospace"
 
 CELL=11; GAP=3; STEP=CELL+GAP
@@ -107,7 +107,7 @@ def render(total, weeks, meta):
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" preserveAspectRatio="xMidYMid meet">
   <rect x="1" y="1" width="{W-2}" height="{H-2}" rx="14" fill="{BG}" stroke="{HAIR}"/>
   <text x="{PAD}" y="38" font-family="{MONO}" font-size="11" letter-spacing="3" fill="{FAINT}">CONTRIBUTION ACTIVITY</text>
-  <text x="{W-PADR}" y="38" text-anchor="end" font-family="{MONO}" font-size="13" fill="{DIM2}">{total:,} commits <tspan fill="{GOLD}">·</tspan> {cur}d streak</text>
+  <text x="{W-PADR}" y="38" text-anchor="end" font-family="{MONO}" font-size="13" fill="{DIM2}">{total:,} commits <tspan fill="{SEP}">&#183;</tspan> {cur}d streak</text>
   <line x1="{PAD}" y1="50" x2="{W-PADR}" y2="50" stroke="{HAIR}"/>
   {months_svg}
   {daylbl}

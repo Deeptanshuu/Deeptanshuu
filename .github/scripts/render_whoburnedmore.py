@@ -9,12 +9,12 @@ Stdlib only - no pip install needed in the Action.
 """
 import os, json, ssl, datetime, urllib.request, urllib.error
 
-# ---- brand tokens (rebrand.deeptanshu.tech) ----
+# ---- brand tokens (deeptanshu.tech: monochrome, green accent) ----
 BG="#09090a"; HAIR="#ffffff14"
 FG="#fafafa"; DIM2="#ffffff9e"; FAINT="#ffffff55"
-GOLD="#e8b339"
-# gold intensity ramp: empty -> bright gold (level 0..4)
-LEVELS=["#16161a","#4a3b18","#8a6a20","#c0922c","#e8b339"]
+SEP="#ffffff40"   # dim "·" separator, as in the site\'s chips
+# green ramp from the site's GitHub calendar: empty -> bright (level 0..4)
+LEVELS=["#1a1b1e","#0e3a24","#15683b","#22a155","#3ddc84"]
 MONO="ui-monospace,'JetBrains Mono','SF Mono',Menlo,Consolas,monospace"
 
 # identical to render_contributions.py so both panels share one grid
@@ -84,7 +84,7 @@ def human(n):
     return f"{n:.0f}"
 
 def bars_bg(data):
-    """30-day daily bars, coloured on the gold ramp by relative size."""
+    """30-day daily bars, coloured on the green ramp by relative size."""
     daily=data["all"].get("daily") or []
     vals=[d["tokens"] for d in daily][-30:]
     if not vals: return ""
@@ -127,7 +127,7 @@ def render(data):
     bits=[]
     if active: bits.append(f"{active} active days")
     bits.append(f"synced {synced} UTC")
-    meta=f' <tspan fill="{GOLD}">&#183;</tspan> '.join(bits)
+    meta=f' <tspan fill="{SEP}">&#183;</tspan> '.join(bits)
     return f'''<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" preserveAspectRatio="xMidYMid meet">
   <rect x="1" y="1" width="{W-2}" height="{H-2}" rx="14" fill="{BG}" stroke="{HAIR}"/>
