@@ -19,8 +19,9 @@ import os, re, json, ssl, datetime, urllib.request, urllib.error
 BG="#09090a"; HAIR="#ffffff14"
 FG="#fafafa"; DIM2="#ffffff9e"; FAINT="#ffffff55"
 SEP="#ffffff40"   # dim "·" separator, as in the site\'s chips
-# green ramp from the site's GitHub calendar, for days with no per-tool split yet
-LEVELS=["#1a1b1e","#0e3a24","#15683b","#22a155","#3ddc84"]
+# monochrome intensity ramp (the site's white-on-black), for days with no per-tool
+# split yet; green stays with the contribution graph, tool colours mean real splits
+LEVELS=["#1a1b1e","#2c2c30","#4a4a50","#7a7a80","#c8c8cc"]
 MONO="ui-monospace,'JetBrains Mono','SF Mono',Menlo,Consolas,monospace"
 
 # width identical to render_contributions.py so both panels share one grid
@@ -205,7 +206,7 @@ def tools_bg(data):
     # every group gets at least minw px so small ones stay visible; the rest is proportional
     free=span-gap*(len(rows)-1)-minw*len(rows)
     out=[f'<text x="{PADL}" y="238" font-family="{MONO}" font-size="10" letter-spacing="2" fill="{FAINT}">BY TOOL &#183; ALL TIME</text>']
-    # key for the daily bars: coloured = split by tool, green = day predates the history
+    # key for the daily bars: coloured = split by tool, grey = day predates the history
     hist=data.get("history") or {}
     daily=(data["all"].get("daily") or [])[-30:]
     if any(not hist.get(d["date"]) for d in daily if d["tokens"]>0):
