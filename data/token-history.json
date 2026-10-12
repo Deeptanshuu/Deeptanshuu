@@ -2,7 +2,8 @@
  "source": "https://api.whoburnedmore.com/v1/usage (period=today, byTool)",
  "days": {
   "2026-10-12": {
-   "hermes": 4955109
+   "claude": 20071458,
+   "hermes": 11129530
   }
  }
 }
