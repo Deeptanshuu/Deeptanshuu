@@ -2,8 +2,9 @@
 """Render the whoburnedmore token-burn panel in the deeptanshu.tech brand palette.
 
 Pulls public usage from the whoburnedmore JSON API (no key, no secrets) and
-writes assets/whoburnedmore.svg. Geometry matches render_contributions.py
-(833x209, rx 14) so the two panels stack as one grid.
+writes assets/whoburnedmore.svg. Width and insets match render_contributions.py
+(833 wide, rx 14) so the two panels stack as one grid; this one is taller to
+fit the per-tool breakdown.
 
 Stdlib only - no pip install needed in the Action.
 """
@@ -17,8 +18,17 @@ SEP="#ffffff40"   # dim "·" separator, as in the site\'s chips
 LEVELS=["#1a1b1e","#0e3a24","#15683b","#22a155","#3ddc84"]
 MONO="ui-monospace,'JetBrains Mono','SF Mono',Menlo,Consolas,monospace"
 
-# identical to render_contributions.py so both panels share one grid
-W=833; H=209
+# width identical to render_contributions.py so both panels share one grid
+W=833; H=316
+
+# per-tool colours (each tool's own brand colour where it has one)
+TOOL_COLORS={
+    "claude":"#d97757", "codex":"#fafafa", "cursor":"#9ca3af", "opencode":"#2dd4bf",
+    "pi":"#a78bfa", "hermes":"#f472b6", "gemini":"#60a5fa", "goose":"#facc15",
+}
+OTHER="#6b7280"
+TOOL_NAMES={"claude":"Claude Code","codex":"Codex","cursor":"Cursor","opencode":"OpenCode",
+            "pi":"Pi","hermes":"Hermes","gemini":"Gemini CLI","goose":"Goose"}
 PADL=33; PADR=33; RIGHT=W-PADR   # symmetric inset so the card reads centred
 
 API="https://api.whoburnedmore.com/v1/usage"
@@ -72,7 +82,10 @@ def mock():
         tok=int((random.random()**2*4e8+peak*6e8)+random.random()*2e7)
         daily.append({"date":d.isoformat(),"tokens":tok,"costUSD":tok/1.35e6})
     def tot(n): return {"tokens":n,"costUSD":n/1.35e6,"activeDays":264}
-    return {"all":{"totals":tot(sum(d["tokens"] for d in daily)*7),"daily":daily},
+    allt=sum(d["tokens"] for d in daily)*7
+    shares={"claude":.67,"pi":.14,"hermes":.085,"opencode":.064,"cursor":.034,"codex":.003,"gemini":.0002,"goose":.0001}
+    return {"all":{"totals":tot(allt),"daily":daily,
+                   "byTool":[{"tool":t,"tokens":int(allt*f)} for t,f in shares.items()]},
             "today":{"totals":tot(daily[-1]["tokens"])},
             "week":{"totals":tot(sum(d["tokens"] for d in daily[-7:]))},
             "year":{"totals":tot(sum(d["tokens"] for d in daily)*6.4)}}
@@ -109,6 +122,33 @@ def bars_bg(data):
     out.append(f'<text x="{RIGHT}" y="152" text-anchor="end" font-family="{MONO}" font-size="10" fill="{FAINT}">{short(first)} &#8594; {short(last)}</text>')
     return "".join(out)
 
+def tools_bg(data):
+    """All-time split by tool: one stacked bar plus a legend grid underneath."""
+    tools=[t for t in (data["all"].get("byTool") or []) if t.get("tokens",0)>0]
+    if not tools: return ""
+    tools.sort(key=lambda t:-t["tokens"])
+    total=sum(t["tokens"] for t in tools)
+    span=RIGHT-PADL; y=238; bh=10; gap=2; minw=3.0
+    # every tool gets at least minw px so small ones stay visible; the rest is proportional
+    free=span-gap*(len(tools)-1)-minw*len(tools)
+    out=[f'<text x="{PADL}" y="226" font-family="{MONO}" font-size="10" letter-spacing="2" fill="{FAINT}">BY TOOL &#183; ALL TIME</text>',
+         f'<text x="{RIGHT}" y="226" text-anchor="end" font-family="{MONO}" font-size="10" fill="{FAINT}">{len(tools)} tools</text>']
+    x=float(PADL)
+    for t in tools:
+        w=minw+free*t["tokens"]/total
+        out.append(f'<rect x="{x:.1f}" y="{y}" width="{w:.1f}" height="{bh}" rx="2" fill="{TOOL_COLORS.get(t["tool"],OTHER)}"/>')
+        x+=w+gap
+    cols=4; gut=24; colw=(span+gut)/cols   # last column ends flush at RIGHT
+    for i,t in enumerate(tools):
+        cx=PADL+(i%cols)*colw; cy=272+(i//cols)*22
+        name=TOOL_NAMES.get(t["tool"],t["tool"].title())
+        pct=100*t["tokens"]/total
+        pcts=f"{pct:.0f}%" if pct>=1 else "&lt;1%"
+        out.append(f'<rect x="{cx:.1f}" y="{cy-8}" width="8" height="8" rx="1.5" fill="{TOOL_COLORS.get(t["tool"],OTHER)}"/>'
+                   f'<text x="{cx+15:.1f}" y="{cy}" font-family="{MONO}" font-size="11" fill="{DIM2}">{name}</text>'
+                   f'<text x="{cx+colw-gut:.1f}" y="{cy}" text-anchor="end" font-family="{MONO}" font-size="11" fill="{FAINT}">{human(t["tokens"])} <tspan fill="{SEP}">&#183;</tspan> {pcts}</text>')
+    return "".join(out)
+
 def rule(prefix=""):
     return f'<text x="{PADL}" y="38" font-family="{MONO}" font-size="11" letter-spacing="3" fill="{FAINT}">{prefix}TOKEN BURN</text>'
 
@@ -138,6 +178,8 @@ def render(data):
   <text x="{PADL}" y="132" font-family="{MONO}" font-size="10" letter-spacing="1.5" fill="{FAINT}">TOKENS BURNED &#183; ALL TIME</text>
   {stats}
   {bars_bg(data)}
+  <line x1="{PADL}" y1="208" x2="{RIGHT}" y2="208" stroke="{HAIR}"/>
+  {tools_bg(data)}
 </svg>
 '''
 
