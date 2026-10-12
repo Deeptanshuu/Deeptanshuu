@@ -31,12 +31,12 @@ W=833; H=328
 TOOLS={
     "claude":  ("Claude Code","#d97757","claudecode"),
     "pi":      ("Pi",         "#a78bfa","pi"),
-    "hermes":  ("Hermes",     "#ffbf00","hermesagent"),   # Hermes Agent's default ui_accent
-    "opencode":("OpenCode",   "#2dd4bf","opencode"),
-    "cursor":  ("Cursor",     "#9ca3af","cursor"),
+    "hermes":  ("Hermes",     "#4d4dff","hermesagent"),   # site blue #0000f2, lifted to read on black
+    "opencode":("OpenCode",   "#8e8b8b","opencode"),      # monochrome brand; icon keeps its own two tones
+    "cursor":  ("Cursor",     "#6b7a8f","cursor"),
     "codex":   ("Codex",      "#fafafa","codex"),
 }
-OTHER=("Other","#6b7280",None)
+OTHER=("Other","#52525b",None)
 ICON_DIR=os.path.join(os.path.dirname(os.path.abspath(__file__)),"tool-icons")
 HISTORY_KEEP=400   # days of per-tool history to retain
 GREEN="#34d058"    # the site's live-status dot
